@@ -1,10 +1,11 @@
 import { test, expect } from '@playwright/test';
 
+// Runs tests in parallel, however this lead to amazon sometimes opening incorrectly
 test.describe.configure({ mode: 'parallel' });
 
 test.beforeEach(async ({ page }) => {
-    await page.goto('https://www.amazon.com/');
-    // While running tests locally with Chrome browser the page sometimes opened differently, this was fixed by reloading the page once
+    await page.goto('/');
+    // While running tests parallel the page sometimes opened differently, this was fixed by reloading the page once
     await page.reload();
   });
 
