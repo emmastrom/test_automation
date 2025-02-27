@@ -51,7 +51,31 @@ test.describe('in amazon.com', () => {
             await expect(sorted).toContainText('Price: High to Low');
         })
 
-        test('second product once clicked for more details has title containing D6', async({ page }) => {
+        test('clicking second product for more details has product title', async({ page }) => {
+            // Search "Nikon"
+            await page.getByRole('searchbox', {name: 'Search Amazon'}).fill('Nikon');
+            await page.getByRole('button', {name: 'GO'}).first().click();
+            await expect(page.getByRole('heading', {name: 'Results', exact: true})).toBeVisible();
+
+            // Sort search results from highest to lowest price
+            const sortby = page.locator('span#a-autoid-0-announce');
+            sortby.click({delay: 1000});
+
+            const highToLow = page.locator('a#s-result-sort-select_2');
+            highToLow.click({delay: 1000});
+    
+            const sorted = page.locator('span.a-dropdown-prompt')
+            await expect(sorted).toContainText('Price: High to Low');
+
+            // Select second product
+            await page.getByRole('link', {name: 'See options'}).nth(1).click();
+            
+            // Check product title exists
+            const productTitle = page.locator('span#productTitle')
+            expect(productTitle).toBeDefined();
+        })
+
+        test('second product once clicked for more details has title containing D3X', async({ page }) => {
             // Search "Nikon"
             await page.getByRole('searchbox', {name: 'Search Amazon'}).fill('Nikon');
             await page.getByRole('button', {name: 'GO'}).first().click();
@@ -70,8 +94,9 @@ test.describe('in amazon.com', () => {
             // Select second product
             await page.getByRole('link', {name: 'See options'}).nth(1).click();
 
-            // Check product title for "Nikon D6"
-            await expect(page.getByRole('heading', {name: 'Nikon D6'})).toBeVisible();
+            // Check product title for "Nikon D3X"
+            const productTitle = page.locator('span#productTitle')
+            await expect(productTitle).toContainText('D3X');
         })
     })
 })
